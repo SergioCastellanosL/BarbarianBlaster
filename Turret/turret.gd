@@ -4,6 +4,8 @@ extends Node3D
 @export var turret_range : float = 10.0
 @onready var mesh_instance_3d: MeshInstance3D = $turretbase/MeshInstance3D/MeshInstance3D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var cannon: Node3D = $turretbase/MeshInstance3D/Cannon
+@onready var turretbase: MeshInstance3D = $turretbase
 
 var enemy_path : Path3D
 var enemy : PathFollow3D
@@ -13,7 +15,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	enemy = find_best_target()
 	if enemy:
-		look_at(enemy.global_position,Vector3.UP,true)
+		turretbase.look_at(enemy.global_position,Vector3.UP,true)
 	
 
 func _on_timer_timeout() -> void:
@@ -21,8 +23,8 @@ func _on_timer_timeout() -> void:
 		var shot = projectile.instantiate()
 		add_child(shot)
 		animation_player.play("fire")
-		shot.global_position = mesh_instance_3d.global_position
-		shot.direction = global_transform.basis.z
+		shot.global_position = cannon.global_position
+		shot.direction = turretbase.global_transform.basis.z
 
 func find_best_target() -> PathFollow3D:
 	var best_target = null
